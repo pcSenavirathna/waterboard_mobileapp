@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -14,6 +16,33 @@ class _SignupPageState extends State<SignupPage> {
   String name = '';
   String mobile = '';
   String password = '';
+
+  Future<void> signup() async {
+    final url = Uri.parse('http://172.20.10.2:3000/signup');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'customerId': customerId,
+        'name': name,
+        'mobile': mobile,
+        'password': password,
+      }),
+    );
+    final data = jsonDecode(response.body);
+    if (data['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signup successful!')),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text('Signup failed: ${data['error'] ?? 'Unknown error'}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,12 +157,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // Handle signup logic
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Signup successful!')),
-                              );
-                              Navigator.pop(context);
+                              signup();
                             }
                           },
                           child: const Text(
