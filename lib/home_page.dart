@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Current Meter',
+                labelText: 'Current Meter value',
               ),
             ),
             const SizedBox(height: 24),

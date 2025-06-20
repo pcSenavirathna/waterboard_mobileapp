@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
@@ -11,9 +12,19 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
+    _checkTerms();
+  }
+
+  Future<void> _checkTerms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accepted = prefs.getBool('accepted_terms') ?? false;
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    if (accepted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    } else {
       Navigator.pushReplacementNamed(context, '/terms');
-    });
+    }
   }
 
   @override

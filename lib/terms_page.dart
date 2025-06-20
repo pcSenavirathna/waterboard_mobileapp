@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TermsPage extends StatelessWidget {
   const TermsPage({super.key});
+
+  Future<void> _acceptTerms(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('accepted_terms', true);
+    Navigator.pushReplacementNamed(context, '/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +50,7 @@ class TermsPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login');
-                      },
+                      onPressed: () => _acceptTerms(context),
                       child: const Text('I Agree', style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, )),
                     ),
                   ),
