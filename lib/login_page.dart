@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -100,11 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // Handle login logic
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Login successful!')),
-                              );
+                              login();
                             }
                           },
                           child: const Text(
@@ -141,5 +140,44 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<void> login() async {
+    try {
+      final url = Uri.parse('http://172.20.10.2:3000/login');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'userInput': userInput,
+          'password': password,
+        }),
+      );
+      final data = jsonDecode(response.body);
+      if (data['success']) {
+        // Navigate to HomePage with customerId and name
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HomePage(
+              customerId: data['user']['customer_id']
+                  .toString(), // <-- convert to String
+              name: data['user']['name'],
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Login failed')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot connect to server. Please try again later.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

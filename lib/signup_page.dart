@@ -18,28 +18,38 @@ class _SignupPageState extends State<SignupPage> {
   String password = '';
 
   Future<void> signup() async {
-    final url = Uri.parse('http://172.20.10.2:3000/signup');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'customerId': customerId,
-        'name': name,
-        'mobile': mobile,
-        'password': password,
-      }),
-    );
-    final data = jsonDecode(response.body);
-    if (data['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signup successful!')),
+    try {
+      final url = Uri.parse('http://172.20.10.2:3000/signup');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'customerId': customerId,
+          'name': name,
+          'mobile': mobile,
+          'password': password,
+        }),
       );
-      Navigator.pop(context);
-    } else {
+      final data = jsonDecode(response.body);
+      if (data['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Signup successful!')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Signup failed: ${data['error'] ?? 'Unknown error'}'),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error if cannot connect to backend
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('Signup failed: ${data['error'] ?? 'Unknown error'}')),
+        const SnackBar(
+          content: Text('Cannot connect to server. Please try again later.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -95,9 +105,13 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: Icon(Icons.badge_outlined),
                           border: UnderlineInputBorder(),
                         ),
+                        keyboardType: TextInputType.number,
                         onChanged: (val) => customerId = val,
-                        validator: (val) =>
-                            val!.isEmpty ? 'Enter Customer ID' : null,
+                        validator: (val) => val == null || val.isEmpty
+                            ? 'Enter Customer ID'
+                            : (int.tryParse(val) == null
+                                ? 'Enter a valid number'
+                                : null),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
