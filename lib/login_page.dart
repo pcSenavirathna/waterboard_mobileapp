@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     try {
-      final url = Uri.parse('http://172.20.10.2:3000/login');
+      final url = Uri.parse('https://waterboard-api.vercel.app/login');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

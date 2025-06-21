@@ -19,7 +19,7 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> signup() async {
     try {
-      final url = Uri.parse('http://172.20.10.2:3000/signup');
+      final url = Uri.parse('https://waterboard-api.vercel.app/signup');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

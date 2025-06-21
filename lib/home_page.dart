@@ -29,7 +29,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchMeterDetails() async {
     setState(() => loading = true);
     final url =
-        Uri.parse('http://172.20.10.2:3000/meter-details/${widget.customerId}');
+        Uri.parse(
+        'https://waterboard-api.vercel.app/meter-details/${widget.customerId}');
     try {
       final response = await http.get(url);
       final data = jsonDecode(response.body);
@@ -124,7 +125,8 @@ class _HomePageState extends State<HomePage> {
                   }
                   try {
                     final url =
-                        Uri.parse('http://172.20.10.2:3000/submit-meter');
+                        Uri.parse(
+                        'https://waterboard-api.vercel.app/submit-meter');
                     final response = await http.post(
                       url,
                       headers: {'Content-Type': 'application/json'},
