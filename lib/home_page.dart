@@ -62,8 +62,25 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Optionally clear session or shared preferences here
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
         backgroundColor: const Color(0xFF4F5BD5),
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -123,9 +140,33 @@ class _HomePageState extends State<HomePage> {
                     );
                     return;
                   }
+                  final enteredValue = double.tryParse(meterValue);
+                  if (enteredValue == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Please enter a valid number')),
+                    );
+                    return;
+                  }
+                  if (previousMeter != null && enteredValue < previousMeter!) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Invalid Value'),
+                        content: const Text(
+                            'Current meter value cannot be less than previous meter value.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    return;
+                  }
                   try {
-                    final url =
-                        Uri.parse(
+                    final url = Uri.parse(
                         'https://waterboard-api.vercel.app/submit-meter');
                     final response = await http.post(
                       url,
@@ -140,7 +181,8 @@ class _HomePageState extends State<HomePage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(data['message'] ?? 'Success!')),
                       );
-                      fetchMeterDetails(); // Refresh after submit
+                      meterController.clear();
+                      fetchMeterDetails();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

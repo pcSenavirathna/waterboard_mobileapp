@@ -3,6 +3,7 @@ import 'signup_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page.dart';
+import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -129,6 +130,22 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                               color: Color(0xFF4F5BD5),
                               fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ForgotPasswordPage()),
+                          );
+                        },
+                        child: const Text(
+                          "Forgot Password?",
+                          style: TextStyle(
+                            color: Color(0xFF4F5BD5),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],

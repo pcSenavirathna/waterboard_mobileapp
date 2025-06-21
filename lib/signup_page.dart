@@ -16,8 +16,15 @@ class _SignupPageState extends State<SignupPage> {
   String name = '';
   String mobile = '';
   String password = '';
+  final TextEditingController securityKeyController = TextEditingController();
 
   Future<void> signup() async {
+    if (securityKeyController.text != '2025') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid Security Key')),
+      );
+      return;
+    }
     try {
       final url = Uri.parse('https://waterboard-api.vercel.app/signup');
       final response = await http.post(
@@ -52,6 +59,12 @@ class _SignupPageState extends State<SignupPage> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    securityKeyController.dispose();
+    super.dispose();
   }
 
   @override
@@ -158,6 +171,19 @@ class _SignupPageState extends State<SignupPage> {
                         onChanged: (val) => password = val,
                         validator: (val) =>
                             val!.isEmpty ? 'Enter password' : null,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: securityKeyController,
+                        decoration: const InputDecoration(
+                          labelText: 'Security Key',
+                          prefixIcon: Icon(Icons.vpn_key),
+                          border: UnderlineInputBorder(),
+                        ),
+                        obscureText: true,
+                        validator: (val) => val == null || val.isEmpty
+                            ? 'Enter Security Key'
+                            : null,
                       ),
                       const SizedBox(height: 28),
                       SizedBox(
