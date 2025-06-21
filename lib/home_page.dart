@@ -29,8 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchMeterDetails() async {
     setState(() => loading = true);
-    final url =
-        Uri.parse(
+    final url = Uri.parse(
         'https://waterboard-api.vercel.app/meter-details/${widget.customerId}');
     try {
       final response = await http.get(url);
@@ -141,8 +140,8 @@ class _HomePageState extends State<HomePage> {
                         const DataCell(Text('Current Outstanding')),
                         DataCell(Text(
                           outstanding != null
-                              ? outstanding!.toStringAsFixed(2)
-                              : "-",
+                              ? 'Rs: ${outstanding!.toStringAsFixed(2)}'
+                              : "0",
                           style: TextStyle(
                             color: (outstanding ?? 0) <= 0
                                 ? Colors.green
