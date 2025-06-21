@@ -98,11 +98,22 @@ class _HomePageState extends State<HomePage> {
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
+          : SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 16),
+                  const Center(
+                    child: Text(
+                      'ශ්‍රී ශාන්ති නිකේතන ප්‍රජා ජල සංවිධානය',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF4F5BD5),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   DataTable(
                     headingRowColor:
@@ -118,7 +129,13 @@ class _HomePageState extends State<HomePage> {
                     rows: [
                       DataRow(cells: [
                         const DataCell(Text('Customer ID')),
-                        DataCell(Text(widget.customerId)),
+                        DataCell(Text(
+                          widget.customerId,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )),
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Name')),
@@ -130,11 +147,19 @@ class _HomePageState extends State<HomePage> {
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Previous Meter')),
-                        DataCell(Text(previousMeter?.toString() ?? "-")),
+                        DataCell(Text(
+                          previousMeter != null
+                              ? previousMeter!.toInt().toString()
+                              : "-",
+                        )),
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Current Meter')),
-                        DataCell(Text(currentMeter?.toString() ?? "-")),
+                        DataCell(Text(
+                          currentMeter != null
+                              ? currentMeter!.toInt().toString()
+                              : "-",
+                        )),
                       ]),
                       DataRow(cells: [
                         const DataCell(Text('Current Outstanding')),
@@ -147,6 +172,7 @@ class _HomePageState extends State<HomePage> {
                                 ? Colors.green
                                 : Colors.red,
                             fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         )),
                       ]),
