@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 16),
                   const Center(
                     child: Text(
-                      'ශ්‍රී ශාන්ති නිකේතන ප්‍රජා ජල සංවිධානය',
+                      'ශ්‍රී ශාන්තිනිකේතන ප්‍රජා ජල සංවිධානය',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
