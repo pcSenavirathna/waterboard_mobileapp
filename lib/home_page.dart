@@ -68,10 +68,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  double calculateMonthCharge(double diff) {
+    double charge = 0;
+    if (diff <= 0) return 0;
+
+    if (diff > 50) {
+      charge += (diff - 50) * 50;
+      diff = 50;
+    }
+    if (diff > 40) {
+      charge += (diff - 40) * 30;
+      diff = 40;
+    }
+    if (diff > 30) {
+      charge += (diff - 30) * 25;
+      diff = 30;
+    }
+    if (diff > 20) {
+      charge += (diff - 20) * 20;
+      diff = 20;
+    }
+    if (diff > 10) {
+      charge += (diff - 10) * 15;
+      diff = 10;
+    }
+    if (diff > 0) {
+      charge += 200; // First 10 units flat
+    }
+    return charge;
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final formattedDate = DateFormat('yyyy/MM/dd').format(now);
+
+    // Calculate this month's charge
+    double diff = (currentMeter ?? 0) - (previousMeter ?? 0);
+    double monthCharge = calculateMonthCharge(diff);
 
     return Scaffold(
       appBar: AppBar(
@@ -171,6 +205,19 @@ class _HomePageState extends State<HomePage> {
                             color: (outstanding ?? 0) <= 0
                                 ? Colors.green
                                 : Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        )),
+                      ]),
+                      DataRow(cells: [
+                        const DataCell(Text("This Month's Charge")),
+                        DataCell(Text(
+                          monthCharge > 0
+                              ? 'Rs: ${monthCharge.toStringAsFixed(2)}'
+                              : "-",
+                          style: const TextStyle(
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
@@ -284,6 +331,35 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
+                  if (currentMeter != null && currentMeter! > 0) ...[
+                    const SizedBox(height: 12), // Add some space
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () {
+                          // TODO: Implement your bill logic or navigation here
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Bill button pressed!')),
+                          );
+                        },
+                        child: const Text(
+                          'Bill',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
