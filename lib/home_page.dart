@@ -350,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: const Text(
-                          'Bill',
+                          'Show Bill',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
