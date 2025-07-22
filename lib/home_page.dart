@@ -69,22 +69,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  double calculateMonthCharge(double diff) {
-    double charge = 200; // Permanent charge
-    if (diff <= 0) return charge;
-
+  double calculateVariableCharge(double diff) {
+    if (diff <= 0) return 0;
     if (diff <= 10) {
-      charge += diff * 15;
+      return diff * 15;
     } else if (diff <= 20) {
-      charge += 10 * 15 + (diff - 10) * 20;
+      return 10 * 15 + (diff - 10) * 20;
     } else if (diff <= 30) {
-      charge += 10 * 15 + 10 * 20 + (diff - 20) * 25;
+      return 10 * 15 + 10 * 20 + (diff - 20) * 25;
     } else if (diff <= 40) {
-      charge += 10 * 15 + 10 * 20 + 10 * 25 + (diff - 30) * 30;
+      return 10 * 15 + 10 * 20 + 10 * 25 + (diff - 30) * 30;
     } else {
-      charge += 10 * 15 + 10 * 20 + 10 * 25 + 10 * 30 + (diff - 40) * 50;
+      return 10 * 15 + 10 * 20 + 10 * 25 + 10 * 30 + (diff - 40) * 50;
     }
-    return charge;
   }
 
   @override
@@ -94,7 +91,9 @@ class _HomePageState extends State<HomePage> {
 
     // Calculate this month's charge
     double diff = (currentMeter ?? 0) - (previousMeter ?? 0);
-    double monthCharge = calculateMonthCharge(diff);
+    double monthCharge = calculateVariableCharge(diff);
+    double permanentCharge = 200;
+    double totalAmount = (outstanding ?? 0) + permanentCharge + monthCharge;
 
     return Scaffold(
       appBar: AppBar(
@@ -185,6 +184,19 @@ class _HomePageState extends State<HomePage> {
                         )),
                       ]),
                       DataRow(cells: [
+                        const DataCell(Text('Number of Units')),
+                        DataCell(Text(
+                          (currentMeter != null && previousMeter != null)
+                              ? (currentMeter! - previousMeter!).toInt().toString()
+                              : "-",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal,
+                            fontSize: 18,
+                          ),
+                        )),
+                      ]),
+                      DataRow(cells: [
                         const DataCell(Text('Current Outstanding')),
                         DataCell(Text(
                           outstanding != null
@@ -226,13 +238,9 @@ class _HomePageState extends State<HomePage> {
                       DataRow(cells: [
                         const DataCell(Text('Total Amount')),
                         DataCell(Text(
-                          outstanding != null
-                              ? 'Rs: ${(outstanding! + monthCharge).toStringAsFixed(2)}'
-                              : "0",
-                          style: TextStyle(
-                            color: (outstanding ?? 0) + monthCharge <= 0
-                                ? Colors.green
-                                : Colors.red,
+                          'Rs: ${totalAmount.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
@@ -369,7 +377,9 @@ class _HomePageState extends State<HomePage> {
                                 currentMeter: currentMeter,
                                 outstanding: outstanding,
                                 monthCharge: monthCharge,
-                                totalAmount: (outstanding ?? 0) + monthCharge,
+                                totalAmount: (outstanding ?? 0) +
+                                    200 +
+                                    monthCharge, // <-- updated calculation
                               ),
                             ),
                           );

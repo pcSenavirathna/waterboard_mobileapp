@@ -96,11 +96,23 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4F5BD5),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (states) {
+                                if (states.contains(MaterialState.hovered)) {
+                                  return const Color(0xFF3A47A8); // Hover color
+                                }
+                                return const Color(0xFF4F5BD5); // Default color
+                              },
+                            ),
+                            padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
@@ -110,9 +122,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text(
                             'Login',
                             style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),

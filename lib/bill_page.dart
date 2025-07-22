@@ -74,109 +74,127 @@ class BillPage extends StatelessWidget {
         backgroundColor: const Color(0xFF4F5BD5),
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Image.asset('assets/images/waterlogo.jpg', width: 80, height: 80),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Waterboard Bill',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.blue[800]),
-                  ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // Prevents overflow
+            children: [
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/images/waterlogo.jpg',
+                        width: 80, height: 80),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Waterboard Bill',
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[800]),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              DataTable(
+                columns: const [
+                  DataColumn(label: Text('Field')),
+                  DataColumn(label: Text('Value')),
+                ],
+                rows: [
+                  DataRow(cells: [
+                    const DataCell(Text('Customer ID')),
+                    DataCell(Text(customerId)),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Name')),
+                    DataCell(Text(name)),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Date')),
+                    DataCell(Text(date)),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Previous Meter')),
+                    DataCell(Text(previousMeter != null
+                        ? previousMeter!.toInt().toString()
+                        : "-")),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Current Meter')),
+                    DataCell(Text(currentMeter != null
+                        ? currentMeter!.toInt().toString()
+                        : "-")),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Outstanding')),
+                    DataCell(Text(
+                      outstanding != null
+                          ? 'Rs: ${outstanding!.toStringAsFixed(2)}'
+                          : "0",
+                      style: TextStyle(
+                        color:
+                            (outstanding ?? 0) <= 0 ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Permanent Charge')),
+                    const DataCell(Text(
+                      'Rs: 200.00',
+                      style: TextStyle(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text("This Month Charge")),
+                    DataCell(Text(
+                      monthCharge > 0
+                          ? 'Rs: ${monthCharge.toStringAsFixed(2)}'
+                          : "-",
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+                  ]),
+                  DataRow(cells: [
+                    const DataCell(Text('Total Amount')),
+                    DataCell(Text(
+                      'Rs: ${totalAmount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    )),
+                  ]),
                 ],
               ),
-            ),
-            const SizedBox(height: 24),
-            DataTable(
-              columns: const [
-                DataColumn(label: Text('Field')),
-                DataColumn(label: Text('Value')),
-              ],
-              rows: [
-                DataRow(cells: [
-                  const DataCell(Text('Customer ID')),
-                  DataCell(Text(customerId)),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Name')),
-                  DataCell(Text(name)),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Date')),
-                  DataCell(Text(date)),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Previous Meter')),
-                  DataCell(Text(previousMeter != null ? previousMeter!.toInt().toString() : "-")),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Current Meter')),
-                  DataCell(Text(currentMeter != null ? currentMeter!.toInt().toString() : "-")),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Outstanding')),
-                  DataCell(Text(
-                    outstanding != null ? 'Rs: ${outstanding!.toStringAsFixed(2)}' : "0",
-                    style: TextStyle(
-                      color: (outstanding ?? 0) <= 0 ? Colors.green : Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Permanent Charge')),
-                  const DataCell(Text(
-                    'Rs: 200.00',
-                    style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text("This Month's Charge")),
-                  DataCell(Text(
-                    monthCharge > 0 ? 'Rs: ${monthCharge.toStringAsFixed(2)}' : "-",
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Total Amount')),
-                  DataCell(Text(
-                    'Rs: ${totalAmount.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  )),
-                ]),
-              ],
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.picture_as_pdf),
-                label: const Text('Share/Download Bill PDF'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[700],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.picture_as_pdf),
+                  label: const Text('Share/Download Bill PDF'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[700],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () => _generateAndSharePdf(context),
                 ),
-                onPressed: () => _generateAndSharePdf(context),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
