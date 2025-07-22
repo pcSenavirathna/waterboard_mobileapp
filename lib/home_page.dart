@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'bill_page.dart'; // <-- import the BillPage
 
 class HomePage extends StatefulWidget {
   final String customerId;
@@ -69,31 +70,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   double calculateMonthCharge(double diff) {
-    double charge = 0;
-    if (diff <= 0) return 0;
+    double charge = 200; // Permanent charge
+    if (diff <= 0) return charge;
 
-    if (diff > 50) {
-      charge += (diff - 50) * 50;
-      diff = 50;
-    }
-    if (diff > 40) {
-      charge += (diff - 40) * 30;
-      diff = 40;
-    }
-    if (diff > 30) {
-      charge += (diff - 30) * 25;
-      diff = 30;
-    }
-    if (diff > 20) {
-      charge += (diff - 20) * 20;
-      diff = 20;
-    }
-    if (diff > 10) {
-      charge += (diff - 10) * 15;
-      diff = 10;
-    }
-    if (diff > 0) {
-      charge += 200; // First 10 units flat
+    if (diff <= 10) {
+      charge += diff * 15;
+    } else if (diff <= 20) {
+      charge += 10 * 15 + (diff - 10) * 20;
+    } else if (diff <= 30) {
+      charge += 10 * 15 + 10 * 20 + (diff - 20) * 25;
+    } else if (diff <= 40) {
+      charge += 10 * 15 + 10 * 20 + 10 * 25 + (diff - 30) * 30;
+    } else {
+      charge += 10 * 15 + 10 * 20 + 10 * 25 + 10 * 30 + (diff - 40) * 50;
     }
     return charge;
   }
@@ -206,7 +195,18 @@ class _HomePageState extends State<HomePage> {
                                 ? Colors.green
                                 : Colors.red,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 18,
+                          ),
+                        )),
+                      ]),
+                      DataRow(cells: [
+                        const DataCell(Text('Permanent Charge')),
+                        const DataCell(Text(
+                          'Rs: 200.00',
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         )),
                       ]),
@@ -219,7 +219,22 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 18,
+                          ),
+                        )),
+                      ]),
+                      DataRow(cells: [
+                        const DataCell(Text('Total Amount')),
+                        DataCell(Text(
+                          outstanding != null
+                              ? 'Rs: ${(outstanding! + monthCharge).toStringAsFixed(2)}'
+                              : "0",
+                          style: TextStyle(
+                            color: (outstanding ?? 0) + monthCharge <= 0
+                                ? Colors.green
+                                : Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         )),
                       ]),
@@ -343,10 +358,20 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: () {
-                          // TODO: Implement your bill logic or navigation here
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Bill button pressed!')),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BillPage(
+                                customerId: widget.customerId,
+                                name: widget.name,
+                                date: formattedDate,
+                                previousMeter: previousMeter,
+                                currentMeter: currentMeter,
+                                outstanding: outstanding,
+                                monthCharge: monthCharge,
+                                totalAmount: (outstanding ?? 0) + monthCharge,
+                              ),
+                            ),
                           );
                         },
                         child: const Text(
